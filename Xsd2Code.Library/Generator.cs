@@ -8,6 +8,7 @@ using Xsd2Code.Library.Extensions;
 using Xsd2Code.Library.Helpers;
 using System.Xml;
 using System.Linq;
+using System.Diagnostics;
 
 namespace Xsd2Code.Library
 {
@@ -88,7 +89,7 @@ namespace Xsd2Code.Library
         /// <param name="generatorParams">Generator parameters</param>
         /// <returns></returns>
         internal static Result<CodeNamespace> Process(GeneratorParams generatorParams)
-        {
+        { 
             var ns = new CodeNamespace();
 
             XmlReader reader = null;

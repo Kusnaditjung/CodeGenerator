@@ -382,6 +382,9 @@ namespace Xsd2Code.Library
             this.Miscellaneous.ExcludeIncludedTypes = false;
             this.TrackingChanges.PropertyChanged += TrackingChangesPropertyChanged;
             this.Serialization.DefaultEncoder = DefaultEncoder.UTF8;
+            this.IsMultipleFiles = false;
+            this.IsSkipNullWhenSerialise = false;
+            this.IsSerialiseDefault = false;
         }
 
         /// <summary>
@@ -656,6 +659,23 @@ namespace Xsd2Code.Library
         [Description("Enable/Disable Global initialisation of the fields in both Constructors, Lazy Properties. Maximum override")]
         public bool EnableInitializeFields { get; set; }
 
+        [Category("Behavior")]
+        [DefaultValue(false)]
+        [Description("Generate multiple files, each file for each class")]
+        public bool IsMultipleFiles { get; set; }
+
+
+        [Category("Behavior")]
+        [DefaultValue(false)]
+        [Description("Serialise a default value")]
+        public bool IsSerialiseDefault { get; set; }
+
+
+        [Category("Behavior")]
+        [DefaultValue(false)]
+        [Description("Skip null element when serialise")]
+        public bool IsSkipNullWhenSerialise { get; set; }
+
         /// <summary>
         /// Loads from file.
         /// </summary>
@@ -742,7 +762,6 @@ namespace Xsd2Code.Library
                 }
             }
 
-
             if (optionLine != null)
             {
                 parameters.NameSpace = optionLine.ExtractStrFromXML(GeneratorContext.NAMESPACETAG);
@@ -770,7 +789,10 @@ namespace Xsd2Code.Library
                 parameters.PropertyParams.GenerateShouldSerializeProperty = Utility.ToBoolean(optionLine.ExtractStrFromXML(GeneratorContext.GENERATESHOULDSERIALIZETAG));
                 parameters.EnableInitializeFields = Utility.ToBoolean(optionLine.ExtractStrFromXML(GeneratorContext.ENABLEINITIALIZEFIELDSTAG), true);
                 parameters.Miscellaneous.ExcludeIncludedTypes = Utility.ToBoolean(optionLine.ExtractStrFromXML(GeneratorContext.EXCLUDEINCLUDEDTYPESTAG));
-                parameters.PropertyParams.GeneratePropertyNameSpecified = Utility.ToEnum<PropertyNameSpecifiedType>(optionLine.ExtractStrFromXML(GeneratorContext.GENERATEPROPERTYNAMESPECIFIEDTAG));
+                parameters.PropertyParams.GeneratePropertyNameSpecified = Utility.ToEnum<PropertyNameSpecifiedType>(optionLine.ExtractStrFromXML(GeneratorContext.GENERATEPROPERTYNAMESPECIFIEDTAG));                
+                parameters.IsMultipleFiles = Utility.ToBoolean(optionLine.ExtractStrFromXML(GeneratorContext.ISMULTIPLEFILES));
+                parameters.IsSerialiseDefault = Utility.ToBoolean(optionLine.ExtractStrFromXML(GeneratorContext.ISSERIALISEDEFAULT));
+                parameters.IsSkipNullWhenSerialise = Utility.ToBoolean(optionLine.ExtractStrFromXML(GeneratorContext.ISSKIPNULLWHENSERIALISE));
 
                 string str = optionLine.ExtractStrFromXML(GeneratorContext.SERIALIZEMETHODNAMETAG);
                 parameters.Serialization.SerializeMethodName = str.Length > 0 ? str : "Serialize";

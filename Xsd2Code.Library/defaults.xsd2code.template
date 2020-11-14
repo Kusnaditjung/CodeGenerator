@@ -21,4 +21,7 @@
   <CustomUsings></CustomUsings>
   <ExcludeIncludedTypes>False</ExcludeIncludedTypes>
   <EnableInitializeFields>True</EnableInitializeFields>
+  <IsMultipleFiles>False</IsMultipleFiles>
+  <IsSerialiseDefault>False</IsSerialiseDefault>
+  <IsSkipNullWhenSerialise>False</IsSkipNullWhenSerialise>
 </auto-generated>

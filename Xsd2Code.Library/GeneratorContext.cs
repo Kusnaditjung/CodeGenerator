@@ -184,6 +184,22 @@
         /// </summary>
         public const string ENABLEINITIALIZEFIELDSTAG = "EnableInitializeFields";
 
+        /// <summary>
+        ///  Generate multiple files instead just one big files
+        /// </summary>
+        public const string ISMULTIPLEFILES = "IsMultipleFiles";
+
+        /// <summary>
+        ///  Serialise Default value attribute
+        /// </summary>
+        public const string ISSERIALISEDEFAULT = "IsSerialiseDefault";
+
+        /// <summary>
+        ///  Skip null element when serialising
+        /// </summary>
+        public const string ISSKIPNULLWHENSERIALISE = "IsSkipNullWhenSerialise";
+
+
         #region Fields
 
         /// <summary>

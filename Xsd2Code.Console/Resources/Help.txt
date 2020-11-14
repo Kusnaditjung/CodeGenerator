@@ -48,7 +48,7 @@ Options:
     /gbc[+]                             - Use Generic Base Class 
     /gbc-                               - Do not use Generic Base Class (default)
     /ggbc[+]                            - Generate Generic Base Class  (default)
-    /ggbc-                              - Do not Generate Generic Base Class
+    /ggbc-                              - Do not Generate Generic Base Class    
 	/tc[+]								- Enable tacking changes
 	/tc-								- Do not enable tracking changes (default)
 	/tcc[+]								- Enable generation of tracking changes classes (default)
@@ -59,6 +59,12 @@ Options:
     /hp[+]                              - Hide private fields in IDE
     /hp-                                - Show private fields in IDE (default)
     /lic[ense]                          - Show license information
+    /m                                  - (Modification) Generate multiple files, one file for each class, 
+                                          with this the output file format just need a path (no slash at the end) instead of a filename
+    /sdefault[+]                        - Serialising Default value of attribute
+    /sdefault-                          - Not Serialising Default value of attribute
+    /sskipnull[+]                       - Skip null element when serialising
+    /sskipnull-                         - Serialise null element as tag with attribute xsi:null = true
     /?, /h[elp]                         - Show this help    
 Example:
 

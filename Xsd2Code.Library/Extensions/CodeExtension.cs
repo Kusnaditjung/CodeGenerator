@@ -33,6 +33,7 @@ namespace Xsd2Code.Library.Extensions
     using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Reflection;
@@ -133,7 +134,9 @@ namespace Xsd2Code.Library.Extensions
                 if (GeneratorContext.GeneratorParams.Miscellaneous.ExcludeIncludedTypes)
                 {
                     //if the typeName is NOT defined in the current schema, skip it.
-                    if (!ContainsTypeName(schema, type))
+                    if (!ContainsTypeName(schema, type)
+                        && (!type.IsEnum) //and not enum (enum can be defined in the schema files)
+                        && (!(type.IsClass && type.BaseTypes.Count == 0))) // and not any element 
                     {
                         code.Types.Remove(type);
                         continue;
@@ -152,6 +155,12 @@ namespace Xsd2Code.Library.Extensions
                     this.RemoveDefaultXmlAttributes(type.CustomAttributes);
                 }
 
+                if (GeneratorContext.GeneratorParams.IsSkipNullWhenSerialise)
+                    this.RemoveNullableValueFromAttributes(type.CustomAttributes);
+
+                if (GeneratorContext.GeneratorParams.IsSerialiseDefault)
+                    this.RemoveDefaultValueAttributes(type.CustomAttributes);
+
                 if (!type.IsClass && !type.IsStruct) continue;
 
                 this.ProcessClass(code, schema, type);
@@ -159,6 +168,61 @@ namespace Xsd2Code.Library.Extensions
 
             foreach (var collName in CollectionTypes.Keys)
                 this.CreateCollectionClass(code, collName);
+        }
+
+        private void RemoveDefaultValueAttributes(CodeAttributeDeclarationCollection customAttributes)
+        {
+            CodeAttributeDeclaration defaulAttr = null;
+            foreach (var attribute in customAttributes)
+            {
+                var attrib = attribute as CodeAttributeDeclaration;
+                if (attrib == null)
+                {
+                    continue;
+                }
+
+                if (attrib.Name == "System.ComponentModel.DefaultValueAttribute")
+                {
+                    defaulAttr = attrib;
+                }
+            }
+
+            if (defaulAttr != null)
+                customAttributes.Remove(defaulAttr);
+        }
+
+        private void RemoveNullableValueFromAttributes(CodeAttributeDeclarationCollection customAttributes)
+        {   
+            foreach (var attribute in customAttributes)
+            {
+                var attrib = attribute as CodeAttributeDeclaration;
+                if (attrib == null)
+                {
+                    continue;
+                }
+
+                if (attrib.Name == "System.Xml.Serialization.XmlElementAttribute" ||                    
+                    attrib.Name == "System.Xml.Serialization.XmlRootAttribute")
+                {
+                    var args = new List<CodeAttributeArgument>();
+
+                    foreach (CodeAttributeArgument arg in attrib.Arguments)
+                    {
+                        if (arg.Name == "IsNullable")
+                        {                            
+                            var val = arg.Value as CodePrimitiveExpression;
+                            if (val != null && val.Value.ToString().ToLower() == true.ToString().ToLower())
+                                args.Add(arg);
+                        }
+                    }
+
+                    foreach(var a in args)
+                    {
+                        attrib.Arguments.Remove(a);
+                    }
+                }                
+            }
+
         }
 
         /// <summary>
@@ -331,6 +395,12 @@ namespace Xsd2Code.Library.Extensions
                 {
                     this.RemoveDefaultXmlAttributes(member.CustomAttributes);
                 }
+
+                if (GeneratorContext.GeneratorParams.IsSkipNullWhenSerialise)
+                    this.RemoveNullableValueFromAttributes(member.CustomAttributes);
+
+                if (GeneratorContext.GeneratorParams.IsSerialiseDefault)
+                    this.RemoveDefaultValueAttributes(member.CustomAttributes);
 
                 var codeMember = member as CodeMemberField;
                 if (codeMember != null)
@@ -1569,8 +1639,10 @@ namespace Xsd2Code.Library.Extensions
         /// <returns>
         /// return found XmlSchemaElement or null value
         /// </returns>
-        protected virtual XmlSchemaElement SearchElement(CodeTypeDeclaration type, XmlSchemaElement xmlElement, string currentElementName, string hierarchicalElmtName)
+        protected virtual XmlSchemaElement SearchElement(CodeTypeDeclaration type, XmlSchemaElement xmlElement, string currentElementName, List<string> hierarchicalElmtNames)
         {
+            var hierarchicalElmtName = string.Join("", hierarchicalElmtNames);
+
             var found = false;
             if (type.IsClass)
             {
@@ -1606,11 +1678,18 @@ namespace Xsd2Code.Library.Extensions
                             currentElementName == xmlElement.QualifiedName.Name)
                             return null;
 
+                        if (hierarchicalElmtNames.Any())
+                        {                            
+                            if (hierarchicalElmtNames.Count(s => s == hierarchicalElmtNames.Last()) == 5)//potential recursive...                        
+                                return null;
+                        }
+
+                        hierarchicalElmtNames.Add(xmlElement.QualifiedName.Name);
                         XmlSchemaElement subItem = this.SearchElement(
                                                                       type,
                                                                       currentXmlSchemaElement,
                                                                       xmlElement.QualifiedName.Name,
-                                                                      hierarchicalElmtName + xmlElement.QualifiedName.Name);
+                                                                      hierarchicalElmtNames);
                         if (subItem != null)
                             return subItem;
                     }
@@ -2219,7 +2298,7 @@ namespace Xsd2Code.Library.Extensions
                                              Attributes = MemberAttributes.Static | MemberAttributes.Private
                                          };
 
-            var statments = new CodeStatementCollection();
+            var statments = new CodeStatementCollection();            
 
             statments.Add(
                 new CodeAssignStatement(
@@ -2302,7 +2381,7 @@ namespace Xsd2Code.Library.Extensions
                     continue;
                 }
 
-                var xmlSubElement = this.SearchElement(codeTypeDeclaration, xmlElement, string.Empty, string.Empty);
+                var xmlSubElement = this.SearchElement(codeTypeDeclaration, xmlElement, string.Empty, new List<string>());
                 if (xmlSubElement != null) return xmlSubElement;
             }
 

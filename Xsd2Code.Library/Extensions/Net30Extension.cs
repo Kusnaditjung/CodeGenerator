@@ -288,7 +288,7 @@ namespace Xsd2Code.Library.Extensions
                         {
                             var attrib = attribute as CodeAttributeDeclaration;
                             if (attrib != null)
-                            {
+                            {                                
                                 // Don't transform property with default value.
                                 if (attrib.Name == "System.ComponentModel.DefaultValueAttribute")
                                 {

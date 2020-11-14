@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Xsd2Code.Library;
@@ -24,7 +25,7 @@ namespace Xsd2Code
     {
         [STAThread]
         static private void Main(string[] args)
-        {
+        {            
             // Display hekp when no parameters have been specified
             if (args.Length < 1)
             {
@@ -321,18 +322,34 @@ namespace Xsd2Code
                     case "/is-":
                         generatorParams.Serialization.Enabled = false;
                         break;
-
+                    case "/m":
+                    case "/multi":
+                        generatorParams.IsMultipleFiles = true;
+                        break;
+                    case "/sdefault-":
+                        generatorParams.IsSerialiseDefault = false;
+                        break;
+                    case "/sdefault":
+                    case "/sdefault+":                    
+                        generatorParams.IsSerialiseDefault = true;
+                        break;
+                    case "/sskipnull-":
+                        generatorParams.IsSkipNullWhenSerialise = false;
+                        break;
+                    case "/sskipnull":
+                    case "/sskipnull+":                    
+                        generatorParams.IsSkipNullWhenSerialise = true;
+                        break;
                     case "/lic":
                     case "/license":
                         DisplayLicense();
-                        return;
-
+                        return;                    
                     case "/?":
                     case "/h":
                     case "/hlp":
                     case "/help":
                         DisplayHelp();
-                        return;
+                        return;                    
                 }
             }
 
@@ -374,7 +391,7 @@ namespace Xsd2Code
         }
 
         static private void DisplayApplicationInfo()
-        {
+        {            
             var currentAssembly = Assembly.GetExecutingAssembly();
             var currentAssemblyName = currentAssembly.GetName();
 

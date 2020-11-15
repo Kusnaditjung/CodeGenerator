@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xsd2Code.Library", "Xsd2Cod
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xsd2Code.TestUnit", "Xsd2Code.TestUnit\Xsd2Code.TestUnit.csproj", "{76D1A3F3-DBA4-4236-B882-52031598757A}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{7B6BDBEB-F173-45AD-9AFB-B75C7972FF86}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,12 @@ Global
 		{76D1A3F3-DBA4-4236-B882-52031598757A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{76D1A3F3-DBA4-4236-B882-52031598757A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{76D1A3F3-DBA4-4236-B882-52031598757A}.Release|x86.ActiveCfg = Release|Any CPU
+		{7B6BDBEB-F173-45AD-9AFB-B75C7972FF86}.Debug|Any CPU.ActiveCfg = Debug
+		{7B6BDBEB-F173-45AD-9AFB-B75C7972FF86}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{7B6BDBEB-F173-45AD-9AFB-B75C7972FF86}.Debug|x86.ActiveCfg = Debug
+		{7B6BDBEB-F173-45AD-9AFB-B75C7972FF86}.Release|Any CPU.ActiveCfg = Release
+		{7B6BDBEB-F173-45AD-9AFB-B75C7972FF86}.Release|Mixed Platforms.ActiveCfg = Release
+		{7B6BDBEB-F173-45AD-9AFB-B75C7972FF86}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
